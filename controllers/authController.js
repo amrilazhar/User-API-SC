@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { User, RefreshToken } = require("../models");
+const { RefreshToken } = require("../models");
 const userService = require("../helpers/refreshTokenHelper");
 
 class AuthController {
@@ -44,7 +44,8 @@ class AuthController {
 			let newToken = await userService.refreshToken({ token, ipAddress });
 
 			setTokenCookie(res, newToken.refreshToken);
-			res.status(200).json(newToken.user);
+			return res.status(200).json(newToken.user);
+
 		} catch (error) {
 			if (!error.statusCode) {
 				error.statusCode = 500;
@@ -54,9 +55,9 @@ class AuthController {
 		}
 	}
 
-	revokeToken(req, res, next) {
+	async revokeToken(req, res, next) {
 		try {			
-			// accept token from request body or cookie
+			// accept token from request body or cookies
 			const token = req.body.token || req.cookies.refreshToken;
 			const ipAddress = req.ip;
 
@@ -66,8 +67,11 @@ class AuthController {
 				throw err;
 			};
 
+			//search user token
+			let userOwnToken = await RefreshToken.findOne({ user : req.user.id, token : token });
+
 			// users can revoke their own tokens and admins can revoke any tokens
-			if (!req.user.ownsToken(token) && req.user.role !== "admin") {
+			if (!userOwnToken && req.user.role !== "admin") {
 				return res.status(401).json({ message: "Unauthorized" });
 			}
 
@@ -75,6 +79,10 @@ class AuthController {
 
 			if (revoke) {
 				return res.json({ message: "Token revoked" })
+			} else {
+				const err = new Error("Something went wrong!");
+				err.statusCode = 400;
+				throw err;
 			}
 
 		} catch (error) {
