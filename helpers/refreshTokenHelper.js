@@ -6,7 +6,7 @@ module.exports = {
 	refreshToken,
 	revokeToken,
 	getRefreshTokens,
-    generateRefreshToken,
+	generateRefreshToken,
 };
 
 async function refreshToken({ token, ipAddress }) {
@@ -99,12 +99,15 @@ function basicDetails(user) {
 
 function generateJwtToken(user) {
 	// create a jwt token containing the user id that expires in 15 minutes
+	let data = {
+		role: user.role,
+		id: user.id,
+		email: user.email,
+		username: user.username,
+	};
 	return jwt.sign(
 		{
-			role: user.role,
-			id: user.id,
-			email: user.email,
-			username: user.username,
+			user: data,
 		},
 		process.env.JWT_SECRET,
 		{ expiresIn: "15m" }

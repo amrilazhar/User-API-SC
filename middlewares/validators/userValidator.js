@@ -20,7 +20,7 @@ const objectId = (value) => {
 const userExistsByUsername = async (value, { req }) => {
 	const user = await User.exists({ username: value });
 
-	if (!user) {
+	if (user) {
 		return Promise.reject("This username has been registered");
 	}
 
@@ -28,7 +28,6 @@ const userExistsByUsername = async (value, { req }) => {
 };
 
 const userExistsByEmail = async (value, { req }) => {
-	console.log(value, "============ value");
 	const email = await User.exists({ email: req.body.email });
 
 	if (email) {
@@ -56,12 +55,7 @@ const passwordMatch = async (value, { req }) => {
 
 exports.signup = [
 	body("username").trim().notEmpty().custom(userExistsByUsername),
-	check("email")
-		.exists()
-		.bail()
-		.isEmail()
-		.bail()
-		.custom(userExistsByEmail),
+	check("email").notEmpty().isEmail().custom(userExistsByEmail).normalizeEmail(),
 	body("password").trim().notEmpty().isLength({ min: 6 }),
 	body("confirm_password").trim().notEmpty().custom(comparePassword),
 ];

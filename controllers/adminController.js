@@ -5,8 +5,8 @@ class AdminController {
 	async userProfile(req, res, next) {
 		try {
             validationErrorHandler(req, res, next);
-			let user = await User.find({ _id: req.query.user_id, deleted : false });
-			if (!user) {
+			let user = await User.find({ _id: req.query.user_id, deleted : false }).exec();
+			if (user.length == 0) {
 				const err = new Error("User Not Found!");
 				err.statusCode = 400;
 				throw err;
@@ -26,7 +26,7 @@ class AdminController {
         try {
          
             let users = await User.find({deleted : false}).exec();
-			if (users.length) {
+			if (users.length == 0) {
 				const err = new Error("No User Registered !");
 				err.statusCode = 400;
 				throw err;
@@ -46,12 +46,16 @@ class AdminController {
 	async registerUser(req, res, next) {
         try {
             validationErrorHandler(req, res, next);
+            console.log("masuk sin");
             let data = {
                 username : req.body.username,
                 email :req.body.email,
+                password : process.env.DEFAULT_PASSWORD,
                 address : req.body.address,
+                role : "user",
             }
             let userRegis = await User.create(data);
+            console.log(userRegis, "======= regis");
             if(!userRegis) {
                 const err = new Error("Something went wrong!");
 				err.statusCode = 400;
@@ -70,7 +74,8 @@ class AdminController {
 	async refreshTokenList(req, res, next) {
         try {
             validationErrorHandler(req, res, next);
-            let listToken =  userService.getRefreshTokens(req.query.user_id);
+            let listToken =  await userService.getRefreshTokens(req.query.user_id);
+
             if (listToken.length > 0 ){
                 return res.status(200).json({message :'success', data : listToken});
             } else {
@@ -90,8 +95,8 @@ class AdminController {
         try {
             validationErrorHandler(req, res, next);
             let deleteUser = await User.deleteOne({_id : req.body.user_id})
-            if (!deleteUser){
-                const err = new Error("Delete fail");
+            if (deleteUser.deletedCount == 0){
+                const err = new Error("Delete fail, Wrong ID");
 				err.statusCode = 400;
 				throw err;
             }

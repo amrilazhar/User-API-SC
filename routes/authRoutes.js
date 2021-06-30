@@ -8,7 +8,7 @@ const userValidator = require("../middlewares/validators/userValidator");
 
 router.post("/signup", userValidator.signup, doAuth, authController.getAccessToken);
 router.post("/login", userValidator.login, doAuth, authController.getAccessToken);
-router.post("/refresh_token", isUser, authController.refreshToken);
+router.post("/refresh_token", authController.refreshToken);
 router.post("/revoke_token", isUser, authController.revokeToken);
 
 module.exports = router;

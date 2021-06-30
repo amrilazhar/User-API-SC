@@ -104,16 +104,18 @@ passport.use(
 					return done(null, false, { message: "you are not Authorized" });
 				}
 
-				if (
-					userSignin.role.includes("user") ||
-					userSignin.role.includes("admin")
-				) {
+				if (userSignin.role.includes("user") || userSignin.role.includes("admin")) {
 					return done(null, token.user);
 				}
 
 				return done(null, false, { message: "you are not Authorized" });
-			} catch (e) {
-				console.log(e);
+			} catch (error) {
+				console.log(error);
+				if (!error.statusCode) {
+					error.statusCode = 500;
+					error.message = "Internal Server Error";
+				}
+				next(error);
 			}
 		}
 	)
@@ -141,8 +143,13 @@ passport.use(
 				}
 
 				return done(null, false, { message: "you are not Authorized" });
-			} catch (e) {
-				console.log(e);
+			} catch (error) {
+				console.log(error);
+				if (!error.statusCode) {
+					error.statusCode = 500;
+					error.message = "Internal Server Error";
+				}
+				next(error);
 			}
 		}
 	)
@@ -172,12 +179,13 @@ let doAuth = async (req, res, next) => {
 			req.user = user;
 			next();
 		})(req, res, next);
-	} catch (e) {
-		console.log(e);
-		return res.status(500).json({
-			message: "internal server error",
-			error: err,
-		});
+	} catch (error) {
+		console.log(error);
+		if (!error.statusCode) {
+			error.statusCode = 500;
+			error.message = "Internal Server Error";
+		}
+		next(error);
 	}
 };
 
@@ -202,12 +210,13 @@ let isUser = async (req, res, next) => {
 			req.user = user;
 			next();
 		})(req, res, next);
-	} catch (e) {
-		console.log(e);
-		return res.status(500).json({
-			message: "internal server error",
-			error: err,
-		});
+	} catch (error) {
+		console.log(error);
+		if (!error.statusCode) {
+			error.statusCode = 500;
+			error.message = "Internal Server Error";
+		}
+		next(error);
 	}
 };
 
@@ -228,12 +237,13 @@ let isAdmin = async (req, res, next) => {
 			}
 			next();
 		})(req, res, next);
-	} catch (e) {
-		console.log(e);
-		return res.status(500).json({
-			message: "internal server error",
-			error: err,
-		});
+	} catch (error) {
+		console.log(error);
+		if (!error.statusCode) {
+			error.statusCode = 500;
+			error.message = "Internal Server Error";
+		}
+		next(error);
 	}
 };
 
