@@ -9,6 +9,7 @@ class AuthController {
 				id: req.user._id,
 				role: req.user.role,
 				email: req.user.email,
+				username : req.user.username,
 			};
 			const token = jwt.sign(
 				{

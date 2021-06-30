@@ -1,6 +1,6 @@
 const passport = require("passport"); // Import passport
 const localStrategy = require("passport-local").Strategy; // Import Strategy
-const { user } = require("../../models");
+const { User } = require("../../models");
 
 const bcrypt = require("bcrypt"); // Import bcrypt
 const JWTstrategy = require("passport-jwt").Strategy; // Import JWT Strategy
@@ -18,7 +18,7 @@ passport.use(
 			try {
 				//set default role to user
 				req.body.role = "user";
-				let userSignUp = await user.create(req.body);
+				let userSignUp = await User.create(req.body);
 				// If success
 				return done(null, userSignUp, {
 					message: "User can be created",
@@ -55,7 +55,7 @@ passport.use(
 		},
 		async (req, username, password, done) => {
 			try {
-				const userSignin = await user.findOne({
+				const userSignin = await User.findOne({
 					username,
 				});
 
@@ -95,7 +95,7 @@ passport.use(
 		},
 		async (token, done) => {
 			try {
-				const userSignin = await user.findOne({
+				const userSignin = await User.findOne({
 					_id: token.user.id,
 				});
 
@@ -127,7 +127,7 @@ passport.use(
 		},
 		async (token, done) => {
 			try {
-				const userSignin = await user.findOne({
+				const userSignin = await User.findOne({
 					_id: token.user.id,
 				});
 

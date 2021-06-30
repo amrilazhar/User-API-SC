@@ -5,8 +5,7 @@ class UserController {
 	async myUserProfile(req, res, next) {
 		try {
 			let dataUser = await User.findOne({ _id: req.user.id });
-			delete dataUser._doc.password;
-			return res.status(200).json({ message: "Success", data: dataUser });
+			return res.status(200).json({ message: "success", data: dataUser });
 		} catch (error) {
 			//console.log(error);
 			if (!error.statusCode) {

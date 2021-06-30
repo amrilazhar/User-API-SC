@@ -102,10 +102,6 @@ exports.updateUser = [
 	body("username").trim().notEmpty().optional({ nullable: true }),
 ];
 
-exports.resetPassword = [
-	body("email").isEmail().normalizeEmail().custom(userNotExistsByEmail),
-];
-
 exports.changePassword = [
 	body("password").trim().isLength({ min: 6 }),
 	body("confirmPassword").custom(comparePassword),
