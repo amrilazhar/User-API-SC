@@ -6,7 +6,8 @@ const { doAuth } = require("../middlewares/auth/");
 const authController = require("../controllers/authController");
 const userValidator = require("../middlewares/validators/userValidator");
 
-router.post("/signup", userValidator.signup, doAuth, authController.getToken);
-router.post("/login", userValidator.login, doAuth, authController.getToken);
+router.post("/signup", userValidator.signup, doAuth, authController.getAccessToken);
+router.post("/login", userValidator.login, doAuth, authController.getAccessToken);
+router.post("/refresh_token", authController.refreshToken);
 
 module.exports = router;

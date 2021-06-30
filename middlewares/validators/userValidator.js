@@ -1,4 +1,4 @@
-const { body, param } = require("express-validator");
+const { body, check } = require("express-validator");
 const mongoose = require("mongoose");
 
 const User = require("../../models/users");
@@ -77,13 +77,18 @@ exports.signup = [
 	body("confirm_password").custom(comparePassword),
 ];
 
+exports.registerUser = [
+	body("username").trim().notEmpty().custom(userExistsByUsername),
+	body("email").isEmail().custom(userExistsByEmail).normalizeEmail(),
+];
+
 exports.login = [
 	body("username").trim(),
 	body("password").trim().isLength({ min: 6 }),
 ];
 
-exports.getSingleUser = [
-	param("user_id").custom(isValidObjectId).bail().customSanitizer(objectId),
+exports.checkUserId = [
+	check("user_id").custom(isValidObjectId).bail().customSanitizer(objectId),
 ];
 
 exports.updateUser = [
@@ -105,3 +110,5 @@ exports.changePassword = [
 	body("password").trim().isLength({ min: 6 }),
 	body("confirmPassword").custom(comparePassword),
 ];
+
+

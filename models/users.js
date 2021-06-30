@@ -2,30 +2,27 @@ const mongoose = require("mongoose");
 const mongoose_delete = require("mongoose-delete");
 const bcrypt = require("bcrypt");
 
+const roleType = {
+	Admin: "admin",
+	User: "user",
+  };
+
 const UserSchema = new mongoose.Schema(
 	{
-		email: {
+		email: { type: String, required: true, unique: true },
+		username: { type: String, required: true, unique: true },
+		password: { type: String, required: true, default: "1234" },
+		address: String,
+		role: {
 			type: String,
 			required: true,
-			unique: true,
+			enum: [roleType.Admin, roleType.User],
 		},
-		username: {
-			type: String,
-            required : true,
-			unique: true,
-		},
-		password: {
-			type: String,
-            required : true,
-		},
-        address : {
-            type : String,
-        }
 	},
 	{
 		timestamps: {
-			createdAt: "created_at",
-			updatedAt: "updated_at",
+			createdAt: "created",
+			updatedAt: "updated",
 		},
 	}
 );
@@ -38,6 +35,15 @@ UserSchema.pre("save", function (next) {
 	next();
 });
 
+UserSchema.set("toJSON", {
+	virtuals: true,
+	versionKey: false,
+	transform: function (doc, ret) {
+		// remove these props when object is serialized
+		delete ret._id;
+		delete ret.password;
+	},
+});
 
 UserSchema.plugin(mongoose_delete, { overrideMethods: "all" });
 

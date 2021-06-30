@@ -1,10 +1,10 @@
-const { user } = require("../models");
+const { User } = require("../models");
 
 class UserController {
 	// View data user
 	async myUserProfile(req, res, next) {
 		try {
-			let dataUser = await user.findOne({ _id: req.user.id });
+			let dataUser = await User.findOne({ _id: req.user.id });
 			delete dataUser._doc.password;
 			return res.status(200).json({ message: "Success", data: dataUser });
 		} catch (error) {
@@ -26,7 +26,7 @@ class UserController {
 				error.statusCode = 400;
 				throw error;
 			}
-			let dataUser = await user.findOneAndUpdate(
+			let dataUser = await User.findOneAndUpdate(
 				{ _id: req.params.id },
 				req.body,
 				{ new: true }

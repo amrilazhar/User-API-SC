@@ -12,6 +12,7 @@ const fs = require("fs");
 const path = require("path");
 const morgan = require("morgan");
 const cors = require("cors");
+const cookieParser = require('cookie-parser');
 
 //import Express framework
 const express = require("express");
@@ -24,9 +25,10 @@ app.use(cors());
 app.use(express.json()); // support json encoded bodies
 app.use(
 	express.urlencoded({
-		extended: true,
+		extended: false,
 	})
 ); // support encoded bodies
+app.use(cookieParser());
 
 // ROUTES DECLARATION & IMPORT
 const authRoutes = require("./routes/authRoute.js");
@@ -34,6 +36,9 @@ app.use("/auth", authRoutes);
 
 const userRoutes = require("./routes/userRoute.js");
 app.use("/user", userRoutes);
+
+const adminRoutes = require("./routes/adminRoutes.js");
+app.use("/admin", adminRoutes);
 
 //======================== security code ==============================//
 // Sanitize data
