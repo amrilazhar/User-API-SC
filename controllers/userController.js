@@ -18,6 +18,7 @@ class UserController {
 	// Update data user
 	async userUpdate(req, res, next) {
 		try {
+			validationErrorHandler(req, res, next);
 			let dataUser = await User.findOneAndUpdate(
 				{ _id: req.user.id },
 				req.body,
@@ -45,7 +46,7 @@ class UserController {
 	//change password user
 	async changePassword(req, res, next) {
 		try {
-			
+			validationErrorHandler(req, res, next);
 			let dataUser = await User.findOneAndUpdate(
 				{ _id: req.user.id },
 				req.body,

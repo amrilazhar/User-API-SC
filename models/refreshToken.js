@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const RefreshTokenSchema = new mongoose.Schema(
 	{
-        user: { type: Schema.Types.ObjectId, ref: 'User' },
+        user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         token: String,
         expires: Date,
         createdByIp: String,

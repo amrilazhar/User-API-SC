@@ -28,19 +28,10 @@ const userExistsByUsername = async (value, { req }) => {
 };
 
 const userExistsByEmail = async (value, { req }) => {
-	if (!value) {
-		return true;
-	}
+	console.log(value, "============ value");
+	const email = await User.exists({ email: req.body.email });
 
-	const email = await Promise.all([
-		User.exists({ email: req.body.email }),
-		User.exists({
-			newEmail: req.body.email,
-			emailExpiration: { $gt: Date.now() },
-		}),
-	]);
-
-	if (email[0] || email[1]) {
+	if (email) {
 		return Promise.reject("This e-mail is already registered");
 	}
 
@@ -65,9 +56,14 @@ const passwordMatch = async (value, { req }) => {
 
 exports.signup = [
 	body("username").trim().notEmpty().custom(userExistsByUsername),
-	body("email").isEmail().custom(userExistsByEmail).normalizeEmail(),
-	body("password").trim().isLength({ min: 6 }),
-	body("confirm_password").custom(comparePassword),
+	check("email")
+		.exists()
+		.bail()
+		.isEmail()
+		.bail()
+		.custom(userExistsByEmail),
+	body("password").trim().notEmpty().isLength({ min: 6 }),
+	body("confirm_password").trim().notEmpty().custom(comparePassword),
 ];
 
 exports.registerUser = [

@@ -25,16 +25,16 @@ app.use(cors());
 app.use(express.json()); // support json encoded bodies
 app.use(
 	express.urlencoded({
-		extended: false,
+		extended: true,
 	})
 ); // support encoded bodies
 app.use(cookieParser());
 
 // ROUTES DECLARATION & IMPORT
-const authRoutes = require("./routes/authRoute.js");
+const authRoutes = require("./routes/authRoutes.js");
 app.use("/auth", authRoutes);
 
-const userRoutes = require("./routes/userRoute.js");
+const userRoutes = require("./routes/userRoutes.js");
 app.use("/user", userRoutes);
 
 const adminRoutes = require("./routes/adminRoutes.js");

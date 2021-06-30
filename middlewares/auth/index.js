@@ -5,6 +5,7 @@ const { User } = require("../../models");
 const bcrypt = require("bcrypt"); // Import bcrypt
 const JWTstrategy = require("passport-jwt").Strategy; // Import JWT Strategy
 const ExtractJWT = require("passport-jwt").ExtractJwt; // Import ExtractJWT
+const validationErrorHandler = require("../../helpers/validationErrorHandler");
 
 passport.use(
 	"signup",
@@ -149,6 +150,7 @@ passport.use(
 
 let doAuth = async (req, res, next) => {
 	try {
+		validationErrorHandler(req, res, next);
 		//get the user act (login or signup)
 		let act = req.route.path.substring(1);
 		passport.authenticate(act, (err, user, info) => {

@@ -1,8 +1,10 @@
 const { User } = require("../models");
 const userService = require("../helpers/refreshTokenHelper");
+const validationErrorHandler = require("../helpers/validationErrorHandler");
 class AdminController {
 	async userProfile(req, res, next) {
 		try {
+            validationErrorHandler(req, res, next);
 			let user = await User.find({ _id: req.query.user_id, deleted : false });
 			if (!user) {
 				const err = new Error("User Not Found!");
@@ -22,6 +24,7 @@ class AdminController {
 
 	async userList(req, res, next) {
         try {
+         
             let users = await User.find({deleted : false}).exec();
 			if (users.length) {
 				const err = new Error("No User Registered !");
@@ -42,6 +45,7 @@ class AdminController {
 
 	async registerUser(req, res, next) {
         try {
+            validationErrorHandler(req, res, next);
             let data = {
                 username : req.body.username,
                 email :req.body.email,
@@ -65,6 +69,7 @@ class AdminController {
     }
 	async refreshTokenList(req, res, next) {
         try {
+            validationErrorHandler(req, res, next);
             let listToken =  userService.getRefreshTokens(req.query.user_id);
             if (listToken.length > 0 ){
                 return res.status(200).json({message :'success', data : listToken});
@@ -83,6 +88,7 @@ class AdminController {
     }
 	async closeAccount(req, res, next) {
         try {
+            validationErrorHandler(req, res, next);
             let deleteUser = await User.deleteOne({_id : req.body.user_id})
             if (!deleteUser){
                 const err = new Error("Delete fail");

@@ -11,6 +11,8 @@ class AuthController {
 				email: req.user.email,
 				username : req.user.username,
 			};
+
+			//generate access token
 			const token = jwt.sign(
 				{
 					user: body,
@@ -19,9 +21,15 @@ class AuthController {
 				{ expiresIn: "1h" },
 				{ algorithm: "RS256" }
 			);
+			
+			//generate refresh token
+			const ipAddress = req.ip;
+			let newToken = await userService.generateRefreshToken(body, ipAddress);
+			setTokenCookie(res, newToken.refreshToken);
+
 			return res.status(200).json({
 				message: "success",
-				accesstoken: token,
+				accessToken: token,
 			});
 		} catch (error) {
 			if (!error.statusCode) {
@@ -45,7 +53,10 @@ class AuthController {
 			let newToken = await userService.refreshToken({ token, ipAddress });
 
 			setTokenCookie(res, newToken.refreshToken);
-			return res.status(200).json(newToken.user);
+			return res.status(200).json({
+				message: "success",
+				accessToken: newToken.accessToken,
+			});
 
 		} catch (error) {
 			if (!error.statusCode) {

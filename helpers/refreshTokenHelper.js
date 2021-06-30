@@ -1,11 +1,12 @@
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-const { User, refreshToken, isValidId } = require("../models");
+const { User, RefreshToken, isValidId } = require("../models");
 
 module.exports = {
 	refreshToken,
 	revokeToken,
 	getRefreshTokens,
+    generateRefreshToken,
 };
 
 async function refreshToken({ token, ipAddress }) {
