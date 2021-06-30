@@ -19,5 +19,29 @@
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "xss-clean": "^0.1.1"
-  }
+  },
+  "name": "user-api-sc",
+  "description": "testing user API",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "NODE_ENV=development nodemon index.js",
+    "stop": "NODE_ENV=production forever stop index.js || true",
+    "start": "NODE_ENV=production forever start index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amrilazhar/User-API-SC.git"
+  },
+  "keywords": [
+    "user"
+  ],
+  "author": "Amril Azhar",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/amrilazhar/User-API-SC/issues"
+  },
+  "homepage": "https://github.com/amrilazhar/User-API-SC#readme"
 }
