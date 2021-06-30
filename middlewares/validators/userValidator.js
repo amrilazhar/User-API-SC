@@ -1,6 +1,6 @@
 const { body, check } = require("express-validator");
 const mongoose = require("mongoose");
-
+const bcrypt = require("bcrypt");
 const User = require("../../models/users");
 
 const isValidObjectId = async (value, { req }) => {
@@ -47,25 +47,18 @@ const userExistsByEmail = async (value, { req }) => {
 	return true;
 };
 
-const userNotExistsByEmail = async (value, { req }) => {
-	const email = await Promise.all([
-		User.exists({ email: req.body.email }),
-		User.exists({
-			newEmail: req.body.email,
-			emailExpiration: { $gt: Date.now() },
-		}),
-	]);
-
-	if (!email[0] || !email[1]) {
-		return Promise.reject("This e-mail is not registered");
-	}
-
-	return true;
-};
-
 const comparePassword = async (value, { req }) => {
 	if (req.body.password !== value) {
 		return Promise.reject("Passwords not match");
+	}
+	return true;
+};
+
+const passwordMatch = async (value, { req }) => {
+	const oldData = await User.findById(req.user.id);
+	const validate = await bcrypt.compare(value, oldData.password);
+	if (!validate) {
+		return Promise.reject("Old Passwords not match");
 	}
 	return true;
 };
@@ -103,8 +96,7 @@ exports.updateUser = [
 ];
 
 exports.changePassword = [
+	body("old_password").trim().isLength({ min: 6 }).custom(passwordMatch),
 	body("password").trim().isLength({ min: 6 }),
-	body("confirmPassword").custom(comparePassword),
+	body("confirm_password").custom(comparePassword),
 ];
-
-

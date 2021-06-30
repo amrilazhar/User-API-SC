@@ -1,5 +1,4 @@
 const { User } = require("../models");
-
 class UserController {
 	// View data user
 	async myUserProfile(req, res, next) {
@@ -19,14 +18,8 @@ class UserController {
 	// Update data user
 	async userUpdate(req, res, next) {
 		try {
-			// Update data
-			if (req.user.id != req.params.id) {
-				const error = new Error("id user not found");
-				error.statusCode = 400;
-				throw error;
-			}
 			let dataUser = await User.findOneAndUpdate(
-				{ _id: req.params.id },
+				{ _id: req.user.id },
 				req.body,
 				{ new: true }
 			);
@@ -36,10 +29,57 @@ class UserController {
 				error.statusCode = 400;
 				throw error;
 			}
-			delete dataUser._doc.password;
-			return res.status(200).json({ message: "Success", data: dataUser });
+
+			return res.status(200).json({ message: "success", data: dataUser });
+
 		} catch (error) {
 			//console.log(error);
+			if (!error.statusCode) {
+				error.statusCode = 500;
+				error.message = "Internal Server Error";
+			}
+			next(error);
+		}
+	}
+
+	//change password user
+	async changePassword(req, res, next) {
+		try {
+			
+			let dataUser = await User.findOneAndUpdate(
+				{ _id: req.user.id },
+				req.body,
+				{ new: true }
+			);
+			// If success
+			if (!dataUser) {
+				const error = new Error("id user not found");
+				error.statusCode = 400;
+				throw error;
+			}
+			
+			return res.status(200).json({ message: "success", data: "password changed" });
+		} catch (error) {
+			//console.log(error);
+			if (!error.statusCode) {
+				error.statusCode = 500;
+				error.message = "Internal Server Error";
+			}
+			next(error);
+		}
+	}
+
+	async deleteAccount(req,res,next){
+		try {			
+			let userDelete = await User.deleteOne({_id : req.user.id})
+			// If success
+			if (!userDelete) {
+				const error = new Error("id user not found");
+				error.statusCode = 400;
+				throw error;
+			}			
+			return res.status(200).json({ message: "User Deleted" });
+		} catch (error) {
 			if (!error.statusCode) {
 				error.statusCode = 500;
 				error.message = "Internal Server Error";
