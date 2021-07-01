@@ -18,8 +18,18 @@ const objectId = (value) => {
 };
 
 const userExistsByUsername = async (value, { req }) => {
-	const user = await User.exists({ username: value });
 
+	// if user want to change profile
+	if (req.user) {
+		const oldData = await User.findById(req.user.id);
+		// if username not changed, go next middleware
+		if (oldData.username == value) {
+			return true;
+		}
+	}
+
+	//Check if there is another user with same username
+	const user = await User.exists({ username: value });
 	if (user) {
 		return Promise.reject("This username has been registered");
 	}
@@ -28,8 +38,17 @@ const userExistsByUsername = async (value, { req }) => {
 };
 
 const userExistsByEmail = async (value, { req }) => {
-	const email = await User.exists({ email: req.body.email });
+	// if user want to change profile
+	if (req.user) {
+		const oldData = await User.findById(req.user.id);
+		// if email not changed, go next middleware
+		if (oldData.email == value) {
+			return true;
+		}
+	}
 
+	//Check if there is another user with same email
+	const email = await User.exists({ email: req.body.email });
 	if (email) {
 		return Promise.reject("This e-mail is already registered");
 	}
@@ -38,7 +57,7 @@ const userExistsByEmail = async (value, { req }) => {
 };
 
 const comparePassword = async (value, { req }) => {
-	if (req.body.password !== value) {
+	if (req.body.new_password !== value) {
 		return Promise.reject("Passwords not match");
 	}
 	return true;
@@ -76,17 +95,19 @@ exports.checkUserId = [
 
 exports.updateUser = [
 	body("email")
+		.optional({ nullable: true })
 		.isEmail()
 		.custom(userExistsByEmail)
-		.bail()
-		.normalizeEmail()
-		.optional({ nullable: true }),
+		.normalizeEmail(),
 	body("address").trim().optional({ nullable: true }),
-	body("username").trim().notEmpty().optional({ nullable: true }),
+	body("username")
+		.trim()
+		.custom(userExistsByUsername)
+		.optional({ nullable: true }),
 ];
 
 exports.changePassword = [
 	body("old_password").trim().isLength({ min: 6 }).custom(passwordMatch),
-	body("password").trim().isLength({ min: 6 }),
+	body("new_password").trim().isLength({ min: 6 }),
 	body("confirm_password").custom(comparePassword),
 ];

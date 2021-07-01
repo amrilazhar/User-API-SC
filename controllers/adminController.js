@@ -55,7 +55,7 @@ class AdminController {
                 role : "user",
             }
             let userRegis = await User.create(data);
-            console.log(userRegis, "======= regis");
+
             if(!userRegis) {
                 const err = new Error("Something went wrong!");
 				err.statusCode = 400;

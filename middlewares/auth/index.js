@@ -24,15 +24,15 @@ passport.use(
 				return done(null, userSignUp, {
 					message: "User can be created",
 				});
-			} catch (e) {
-				console.log(e);
+			} catch (error) {
+				console.log(error);
 				// If error, it will return not authorization
-				if (e.code == 11000 && e.keyPattern.username == 1) {
+				if (error.code == 11000 && error.keyPattern.username == 1) {
 					return done(null, false, {
 						message: "Username has been taken",
 					});
 				}
-				if (e.code == 11000 && e.keyPattern.email == 1) {
+				if (error.code == 11000 && error.keyPattern.email == 1) {
 					return done(null, false, {
 						message: "Please use another email",
 					});
@@ -60,7 +60,8 @@ passport.use(
 					username,
 				});
 
-				if (!userSignin) {
+				// cek if there is user or user is not deleted
+				if (!userSignin || userSignin.deleted) {
 					return done(null, false, {
 						message: "User is not found!",
 					});
@@ -76,10 +77,10 @@ passport.use(
 				return done(null, userSignin, {
 					message: "Login success!",
 				});
-			} catch (e) {
-				console.log(e);
+			} catch (error) {
+				console.log(error);
 				// If error, it will return not authorization
-				return done(e, false, {
+				return done(error, false, {
 					message: "Cannot authenticate user",
 				});
 			}
@@ -111,11 +112,9 @@ passport.use(
 				return done(null, false, { message: "you are not Authorized" });
 			} catch (error) {
 				console.log(error);
-				if (!error.statusCode) {
-					error.statusCode = 500;
-					error.message = "Internal Server Error";
-				}
-				next(error);
+				return done(error, false, {
+					message: "Cannot authenticate user",
+				});
 			}
 		}
 	)
@@ -145,11 +144,9 @@ passport.use(
 				return done(null, false, { message: "you are not Authorized" });
 			} catch (error) {
 				console.log(error);
-				if (!error.statusCode) {
-					error.statusCode = 500;
-					error.message = "Internal Server Error";
-				}
-				next(error);
+				return done(error, false, {
+					message: "Cannot authenticate user",
+				});				
 			}
 		}
 	)
@@ -207,6 +204,7 @@ let isUser = async (req, res, next) => {
 					message: info.message,
 				});
 			}
+			
 			req.user = user;
 			next();
 		})(req, res, next);
@@ -224,21 +222,24 @@ let isAdmin = async (req, res, next) => {
 	try {
 		passport.authorize("admin", { session: false }, (err, user, info) => {
 			if (err) {
-				console.log(err);
-				return res.status(500).json({
-					message: "Internal server Error",
-					error: err,
-				});
+				if (!err.statusCode) {
+					err.statusCode = 500;
+					err.message = "Internal Server Error";
+				}
+				next(err);
 			}
 
-			// If user is not exist, still next as guest
-			if (user) {
+			// If not admin, send error
+			if (!user) {
+				const error = new Error(info.message);
+				error.statusCode = 400;
+				throw error;
+			} else {
 				req.user = user;
+				next()
 			}
-			next();
 		})(req, res, next);
 	} catch (error) {
-		console.log(error);
 		if (!error.statusCode) {
 			error.statusCode = 500;
 			error.message = "Internal Server Error";

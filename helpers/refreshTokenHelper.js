@@ -60,7 +60,7 @@ async function getUser(id) {
 	}
 	const user = await User.findById(id);
 
-	if (!user) {
+	if (!user || user.deleted) {
 		const err = new Error("User not found");
 		err.statusCode = 400;
 		throw err;

@@ -1,4 +1,5 @@
 const { User } = require("../models");
+const validationErrorHandler = require("../helpers/validationErrorHandler");
 class UserController {
 	// View data user
 	async myUserProfile(req, res, next) {
@@ -18,10 +19,25 @@ class UserController {
 	// Update data user
 	async userUpdate(req, res, next) {
 		try {
+			
 			validationErrorHandler(req, res, next);
+	
+			// recreate body data base on what input is filled
+			let data = {};
+			if (req.body.email) data.email = req.body.email;
+			if (req.body.username) data.username = req.body.username;
+			if (req.body.address) data.address = req.body.address;
+
+			// if there is no data filled at all, return error
+			if (Object.keys(data).length == 0) {
+				const error = new Error("Please fill at least one data to be changed");
+				error.statusCode = 400;
+				throw error;
+			}
+
 			let dataUser = await User.findOneAndUpdate(
 				{ _id: req.user.id },
-				req.body,
+				data,
 				{ new: true }
 			);
 			// If success
@@ -61,7 +77,6 @@ class UserController {
 			
 			return res.status(200).json({ message: "success", data: "password changed" });
 		} catch (error) {
-			//console.log(error);
 			if (!error.statusCode) {
 				error.statusCode = 500;
 				error.message = "Internal Server Error";
@@ -72,14 +87,14 @@ class UserController {
 
 	async deleteAccount(req,res,next){
 		try {			
-			let userDelete = await User.deleteOne({_id : req.user.id})
+			let userDelete = await User.delete({_id : req.user.id})
 			// If success
 			if (!userDelete) {
 				const error = new Error("id user not found");
 				error.statusCode = 400;
 				throw error;
 			}			
-			return res.status(200).json({ message: "User Deleted" });
+			return res.status(200).json({ message: "Your Account Successfully Closed" });
 		} catch (error) {
 			if (!error.statusCode) {
 				error.statusCode = 500;
