@@ -1,0 +1,41 @@
+---
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "user-api"
+  namespace: "default"
+  labels:
+    app: "user-api"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: "user-api"
+  template:
+    metadata:
+      labels:
+        app: "user-api"
+    spec:
+      containers:
+      - name: "user-api-sejuta-cita-sha256-1"
+        image: "gcr.io/lively-goal-318409/user-api-sejuta-cita@sha256:d43296f8f7978490fd7787f338364f54182316200caaad40fb2021a32410c0d2"
+---
+apiVersion: "autoscaling/v2beta1"
+kind: "HorizontalPodAutoscaler"
+metadata:
+  name: "user-api-hpa-mmrm"
+  namespace: "default"
+  labels:
+    app: "user-api"
+spec:
+  scaleTargetRef:
+    kind: "Deployment"
+    name: "user-api"
+    apiVersion: "apps/v1"
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: "Resource"
+    resource:
+      name: "cpu"
+      targetAverageUtilization: 80
