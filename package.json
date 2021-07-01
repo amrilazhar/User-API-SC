@@ -28,8 +28,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "NODE_ENV=development nodemon index.js",
-    "stop": "NODE_ENV=production forever stop index.js || true",
-    "start": "NODE_ENV=production forever start index.js"
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",

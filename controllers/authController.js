@@ -22,8 +22,6 @@ class AuthController {
 				{ algorithm: "RS256" }
 			);
 
-			console.log("masuk controller AuthController line 25");
-
 			//generate refresh token
 			const ipAddress = req.ip;
 			let newToken = userService.generateRefreshToken(body, ipAddress);

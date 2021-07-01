@@ -1,9 +1,13 @@
 # User-API-SC
-Simple User management API using token and refresh token
+This project is intended to complete the assignment for Sejuta Cita API CRUD User and Login with additional feature which is refresh token
 
 ## Architecture Design
 
 ### Database Design
+This is the design of the user API
+![db_diagram](https://drive.google.com/file/d/1vQrbLOkFsRxa-iRIT0cx3iB9nm292Oki/view?usp=sharing)
+
+## Application Flow
 ### Kubernetes Design
 
 ## Instalation
