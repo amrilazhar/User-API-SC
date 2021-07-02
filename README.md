@@ -1,8 +1,8 @@
 # User-API-SC
-This project is intended to complete the assignment for Sejuta Cita API CRUD User and Login with additional feature which is refresh token
+This project is intended to complete the assignment for Sejuta Cita API CRUD User and Login with token and refresh token feature.
 
 ## Architecture Design
-This section consist of 3 part, which are Database Design, Aplication Flow, and Kubernetes Design/Architecture.
+This section consist of 2 part, which are Database Design and Aplication Flow.
 ### __1. Database Design__
 This is the design of the user API
 ![db_diagram](https://ik.imagekit.io/payp7gr62rv/db_design_user_sejuta_cita_9iduZQjWH.PNG)
@@ -35,21 +35,18 @@ Basic Feature :
 3. Change Password
 4. Close Account
 
-![seq_user](https://ik.imagekit.io/payp7gr62rv/db_design_user_sejuta_cita_9iduZQjWH.PNG)
-### __3. Kubernetes Design__
-This is the design of kubernetes node and pods
+![seq_user](https://ik.imagekit.io/payp7gr62rv/User_Flow_y9ArYxltJzep.png)
+
 ## Instalation
 
-For installing the API firts you must prepare `.env.production` file before running the `DockerFile`, the env file consist of :
+For installing the API firts we must prepare `.env.production` file before running the `DockerFile`, the env file consist of :
 ```
 MONGO_URI = <database-location>
 JWT_SECRET = <secret>
 PORT=<app port>
 DEFAULT_PASSWORD = <default password for register user>
 ```
-and then we can start build the image using `docker build` command, and push the image to docker hub or google cloud platform. 
-## Documentation
-Documentation of this project can be accessed in [Postman Documentation](https://documenter.getpostman.com/view/15024355/TzkyP1Yb)
+and then we can start build the image using `docker build` command, and push the image to docker hub or google cloud platform. Or we can inserted the Environtment Variables needed in kubernetes to GKE directly.
 
 ## Credentials Account Info
 
@@ -65,6 +62,12 @@ username : sejutacita
 
 password : User1234!!
 
+
+
+## Documentation
+Documentation of this project can be accessed in [Postman Documentation](https://documenter.getpostman.com/view/15024355/TzkyP1Yb)
+
+API Address : http://34.126.92.112/
 ## Credits
 1. Thanks to this blog [jason wattmore](https://jasonwatmore.com/post/2020/06/17/nodejs-mongodb-api-jwt-authentication-with-refresh-tokens) for the explanation about refresh token algorithm.
-2. Udemy course [Docker Mastery with Kubernates and Swarm](https://www.udemy.com/share/101WlG2@PW5jfVpcS1EIckRAAmJnfQ==/) by Brett Fischer
+2. Udemy course [Docker Mastery with Kubernates and Swarm](https://www.udemy.com/share/101WlG2@PW5jfVpcS1EIckRAAmJnfQ==/) by Brett Fischer for the explanation about kubernetes.
