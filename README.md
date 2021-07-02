@@ -46,7 +46,7 @@ JWT_SECRET = <secret>
 PORT=<app port>
 DEFAULT_PASSWORD = <default password for register user>
 ```
-and then we can start build the image using `docker build` command, and push the image to docker hub or google cloud platform. Or we can inserted the `Environment Variables` needed in GKE directly (Workloads -> Deployment -> Environment Variables).
+and then run npm install command `npm install`. after that we can start build the image using `docker build` command, and push the image to docker hub or google cloud platform. Or we can inserted the `Environment Variables` needed in GKE directly (Workloads -> Deployment -> Environment Variables).
 
 ## Credentials Account Info
 
