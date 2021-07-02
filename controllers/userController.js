@@ -1,5 +1,6 @@
 const { User } = require("../models");
 const validationErrorHandler = require("../helpers/validationErrorHandler");
+const bcrypt = require("bcrypt");
 class UserController {
 	// View data user
 	async myUserProfile(req, res, next) {
@@ -65,7 +66,7 @@ class UserController {
 			validationErrorHandler(req, res, next);
 			let dataUser = await User.findOneAndUpdate(
 				{ _id: req.user.id },
-				req.body,
+				{ password : bcrypt.hashSync(req.body.password, 12)},
 				{ new: true }
 			);
 			// If success

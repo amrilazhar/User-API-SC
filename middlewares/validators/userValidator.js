@@ -57,7 +57,7 @@ const userExistsByEmail = async (value, { req }) => {
 };
 
 const comparePassword = async (value, { req }) => {
-	if (req.body.new_password !== value) {
+	if (req.body.password !== value) {
 		return Promise.reject("Passwords not match");
 	}
 	return true;
@@ -108,6 +108,6 @@ exports.updateUser = [
 
 exports.changePassword = [
 	body("old_password").trim().isLength({ min: 6 }).custom(passwordMatch),
-	body("new_password").trim().isLength({ min: 6 }),
+	body("password").trim().isLength({ min: 6 }),
 	body("confirm_password").custom(comparePassword),
 ];
