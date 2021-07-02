@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: "user-api-sejuta-cita-sha256-1"
-        image: "gcr.io/lively-goal-318409/user-api-sejuta-cita@sha256:d43296f8f7978490fd7787f338364f54182316200caaad40fb2021a32410c0d2"
+        image: "gcr.io/lively-goal-318409/user-api-sejuta-cita@sha256:9e2e748c903b9734cb74478aafcff0c8cb519742e3de256a7ee22621a4dafc2b"
 ---
 apiVersion: "autoscaling/v2beta1"
 kind: "HorizontalPodAutoscaler"
